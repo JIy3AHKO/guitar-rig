@@ -1,0 +1,35 @@
+[package]
+name = "guitar_rig"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Modular guitar pedalboard + amp plugin"
+
+[workspace]
+members = ["xtask"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", features = ["assert_process_allocs"] }
+nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+serde = { version = "1", features = ["derive"] }
+
+[profile.release]
+lto = "thin"
+strip = "symbols"
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = "none"
+
+[features]
+# `cargo run --release --features standalone` runs the plugin as a standalone app.
+standalone = ["nih_plug/standalone"]
+
+[[bin]]
+name = "guitar_rig_standalone"
+path = "src/main.rs"
+required-features = ["standalone"]
